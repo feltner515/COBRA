@@ -622,7 +622,7 @@ def userobjects(filename, restartbase):
   [soln]
     type = SolutionUserObject
     execute_on = INITIAL
-    mesh = {}.e
+    mesh = {}_out2.e
     timestep = LATEST
     use_displaced_mesh = false
     system_variables = 'subs_hardening_variable'
@@ -630,7 +630,7 @@ def userobjects(filename, restartbase):
   [soln_displacement]
     type = SolutionUserObject
     execute_on = INITIAL
-    mesh = {}.e
+    mesh = {}_out2.e
     timestep = LATEST
     use_displaced_mesh = false
     system_variables = 'subs_disp_00 subs_disp_11 subs_disp_22'
@@ -638,7 +638,7 @@ def userobjects(filename, restartbase):
   [soln_stress]
     type = SolutionUserObject
     execute_on = INITIAL
-    mesh = {}.e
+    mesh = {}_out2.e
     timestep = LATEST
     use_displaced_mesh = false
     system_variables = 'subs_stress_00 subs_stress_01 subs_stress_02 subs_stress_11 subs_stress_12 subs_stress_22 subs_stress_10 subs_stress_20 subs_stress_21'
@@ -646,7 +646,7 @@ def userobjects(filename, restartbase):
   [soln_elastic_strain]
     type = SolutionUserObject
     execute_on = INITIAL
-    mesh = {}.e
+    mesh = {}_out2.e
     timestep = LATEST
     use_displaced_mesh = false
     system_variables = 'subs_elastic_strain_00 subs_elastic_strain_01 subs_elastic_strain_02 subs_elastic_strain_11 subs_elastic_strain_12 subs_elastic_strain_22 subs_elastic_strain_10 subs_elastic_strain_20 subs_elastic_strain_21'
@@ -663,7 +663,7 @@ def userobjects(filename, restartbase):
     type = SolutionUserObject
     
     execute_on = INITIAL
-    mesh = {}.e
+    mesh = {}_out2.e
     timestep = LATEST
     use_displaced_mesh = false
     system_variables = 'subs_plastic_strain_00 subs_plastic_strain_01 subs_plastic_strain_02 subs_plastic_strain_11 subs_plastic_strain_12 subs_plastic_strain_22 subs_plastic_strain_10 subs_plastic_strain_20 subs_plastic_strain_21'
@@ -671,7 +671,7 @@ def userobjects(filename, restartbase):
   [soln_inelast_strain]
     type = SolutionUserObject
     execute_on = INITIAL
-    mesh = {}.e
+    mesh = {}_out2.e
     timestep = LATEST
     use_displaced_mesh = false
     system_variables = 'subs_combined_inelastic_strain_00 subs_combined_inelastic_strain_01 subs_combined_inelastic_strain_02 subs_combined_inelastic_strain_11 subs_combined_inelastic_strain_12 subs_combined_inelastic_strain_22 subs_combined_inelastic_strain_10 subs_combined_inelastic_strain_20 subs_combined_inelastic_strain_21'
@@ -679,7 +679,7 @@ def userobjects(filename, restartbase):
   [soln_eff_inelast_strain]
     type = SolutionUserObject
     execute_on = INITIAL
-    mesh = {}.e
+    mesh = {}_out2.e
     timestep = LATEST
     use_displaced_mesh = false
     system_variables = 'subs_effective_plastic_strain'
@@ -1054,7 +1054,7 @@ def mesh(filename, impact_x, impact_y, roc):
       type = AdvancedExtruderGenerator
       input = subs_0
       direction  = '0 0 1'
-      num_layers = '2 3 2 10'
+      num_layers = '2 6 2 10'
       heights = '0.4 0.3 0.05 0.25'
     []
 
