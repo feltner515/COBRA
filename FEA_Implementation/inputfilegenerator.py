@@ -946,47 +946,47 @@ def userobjects(filename, restartbase):
   [subs_solution_fcn_inel_strain00]
     type = SolutionFunction
     solution = soln_inelast_strain
-    from_variable = subs_combined_inelastic_strain_00
+    from_variable = subs_plastic_strain_00
   [../]
   [subs_solution_fcn_inel_strain01]
     type = SolutionFunction
     solution = soln_inelast_strain
-    from_variable = subs_combined_inelastic_strain_01
+    from_variable = subs_plastic_strain_01
   [../]
   [subs_solution_fcn_inel_strain02]
     type = SolutionFunction
     solution = soln_inelast_strain
-    from_variable = subs_combined_inelastic_strain_02
+    from_variable = subs_plastic_strain_02
   [../]
   [subs_solution_fcn_inel_strain11]
     type = SolutionFunction
     solution = soln_inelast_strain
-    from_variable = subs_combined_inelastic_strain_11
+    from_variable = subs_plastic_strain_11
   [../]
   [subs_solution_fcn_inel_strain12]
     type = SolutionFunction
     solution = soln_inelast_strain
-    from_variable = subs_combined_inelastic_strain_12
+    from_variable = subs_plastic_strain_12
   [../]
   [subs_solution_fcn_inel_strain22]
     type = SolutionFunction
     solution = soln_inelast_strain
-    from_variable = subs_combined_inelastic_strain_22
+    from_variable = subs_plastic_strain_22
   [../]
   [subs_solution_fcn_inel_strain10]
     type = SolutionFunction
     solution = soln_inelast_strain
-    from_variable = subs_combined_inelastic_strain_10
+    from_variable = subs_plastic_strain_10
   [../]
   [subs_solution_fcn_inel_strain20]
     type = SolutionFunction
     solution = soln_inelast_strain
-    from_variable = subs_combined_inelastic_strain_20
+    from_variable = subs_plastic_strain_20
   [../]
   [subs_solution_fcn_inel_strain21]
     type = SolutionFunction
     solution = soln_inelast_strain
-    from_variable = subs_combined_inelastic_strain_21
+    from_variable = subs_plastic_strain_21
   [../]
   
 []\n'''.format(restartbase, restartbase, restartbase, 
