@@ -668,14 +668,14 @@ def userobjects(filename, restartbase):
     use_displaced_mesh = false
     system_variables = 'subs_plastic_strain_00 subs_plastic_strain_01 subs_plastic_strain_02 subs_plastic_strain_11 subs_plastic_strain_12 subs_plastic_strain_22 subs_plastic_strain_10 subs_plastic_strain_20 subs_plastic_strain_21'
   []
-  [soln_inelast_strain]
-    type = SolutionUserObject
-    execute_on = INITIAL
-    mesh = {}_out2.e
-    timestep = LATEST
-    use_displaced_mesh = false
-    system_variables = 'subs_combined_inelastic_strain_00 subs_combined_inelastic_strain_01 subs_combined_inelastic_strain_02 subs_combined_inelastic_strain_11 subs_combined_inelastic_strain_12 subs_combined_inelastic_strain_22 subs_combined_inelastic_strain_10 subs_combined_inelastic_strain_20 subs_combined_inelastic_strain_21'
-  []
+  # [soln_inelast_strain]
+  #   type = SolutionUserObject
+  #   execute_on = INITIAL
+  #   mesh = {}_out2.e
+  #   timestep = LATEST
+  #   use_displaced_mesh = false
+  #   system_variables = 'subs_combined_inelastic_strain_00 subs_combined_inelastic_strain_01 subs_combined_inelastic_strain_02 subs_combined_inelastic_strain_11 subs_combined_inelastic_strain_12 subs_combined_inelastic_strain_22 subs_combined_inelastic_strain_10 subs_combined_inelastic_strain_20 subs_combined_inelastic_strain_21'
+  # []
   [soln_eff_inelast_strain]
     type = SolutionUserObject
     execute_on = INITIAL
@@ -945,47 +945,47 @@ def userobjects(filename, restartbase):
   []
   [subs_solution_fcn_inel_strain00]
     type = SolutionFunction
-    solution = soln_inelast_strain
+    solution = soln_plastic_strain # soln_inelast_strain
     from_variable = subs_plastic_strain_00
   [../]
   [subs_solution_fcn_inel_strain01]
     type = SolutionFunction
-    solution = soln_inelast_strain
+    solution = soln_plastic_strain # soln_inelast_strain
     from_variable = subs_plastic_strain_01
   [../]
   [subs_solution_fcn_inel_strain02]
     type = SolutionFunction
-    solution = soln_inelast_strain
+    solution = soln_plastic_strain # soln_inelast_strain
     from_variable = subs_plastic_strain_02
   [../]
   [subs_solution_fcn_inel_strain11]
     type = SolutionFunction
-    solution = soln_inelast_strain
+    solution = soln_plastic_strain # soln_inelast_strain
     from_variable = subs_plastic_strain_11
   [../]
   [subs_solution_fcn_inel_strain12]
     type = SolutionFunction
-    solution = soln_inelast_strain
+    solution = soln_plastic_strain # soln_inelast_strain
     from_variable = subs_plastic_strain_12
   [../]
   [subs_solution_fcn_inel_strain22]
     type = SolutionFunction
-    solution = soln_inelast_strain
+    solution = soln_plastic_strain # soln_inelast_strain
     from_variable = subs_plastic_strain_22
   [../]
   [subs_solution_fcn_inel_strain10]
     type = SolutionFunction
-    solution = soln_inelast_strain
+    solution = soln_plastic_strain # soln_inelast_strain
     from_variable = subs_plastic_strain_10
   [../]
   [subs_solution_fcn_inel_strain20]
     type = SolutionFunction
-    solution = soln_inelast_strain
+    solution = soln_plastic_strain # soln_inelast_strain
     from_variable = subs_plastic_strain_20
   [../]
   [subs_solution_fcn_inel_strain21]
     type = SolutionFunction
-    solution = soln_inelast_strain
+    solution = soln_plastic_strain # soln_inelast_strain
     from_variable = subs_plastic_strain_21
   [../]
   
@@ -1485,14 +1485,14 @@ def executioner(filename, filebase):
     type = IterationAdaptiveDT
     optimal_iterations = 70
     linear_iteration_ratio = 25
-    dt = 1.5e-7
+    dt = 1e-7
     cutback_factor = 0.75
     cutback_factor_at_failure = 0.5
     growth_factor = 1.5
   []
   dtmin = 1e-12
-  dtmax = 1e-7
-  end_time = 1.5e-6
+  dtmax = 2e-7
+  end_time = 3e-6
 []
 
 [Outputs]
@@ -1565,7 +1565,7 @@ def main(n_trials, mediafile, archetype, massflowrate_kg, peeningtime, partarea,
           density_scale[p] = sphere_box_montecarlo(radius = IOE_particles[p]/2000, sphere_center=[x_coords[0], y_coords[p], 2], box_coords=[0.25,0.25,0, 0.75,0.75,10], n=1E6)
       particledensity = np.zeros((len(IOE_particles),1))
       for p in range(0,len(IOE_particles)):
-          particledensity[p] = density_scale[p]*density*IOE_effectivedensity[p]
+          particledensity[p] = 2*density_scale[p]*density*IOE_effectivedensity[p]
       #now we have the mass density for each particle
       bash_gen(filename=filename, n_files=len(IOE_particles))
       initialfile(filename='{}_{}'.format(filename,int(0)), impact_x = x_coords[0], impact_y = y_coords[0], roc = IOE_particles[0]/2000, velx=velx[0], vely=vely[0], velz=velz[0], shot_density=particledensity[0], filebase = '{}_{}'.format(filename,int(0)))
