@@ -1491,8 +1491,8 @@ def executioner(filename, filebase):
     growth_factor = 1.5
   []
   dtmin = 1e-12
-  dtmax = 2e-7
-  end_time = 3e-6
+  dtmax = 2.5e-7
+  end_time = 6e-6
 []
 
 [Outputs]
