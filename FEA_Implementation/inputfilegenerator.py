@@ -1445,6 +1445,7 @@ def materials(filename, density_shot):
     block = '2'
     prop_names = 'density'
     prop_values = '{}'
+    outputs = exodus
     # base_name = 'shot'
    []
    [ADdensity_shot]
@@ -1572,7 +1573,6 @@ def main(n_trials, mediafile, archetype, massflowrate_kg, peeningtime, partarea,
       for p in range (1,len(IOE_particles)):
           restartfile(filename='{}_{}'.format(filename,int(p)), impact_x = x_coords[p], impact_y = y_coords[p], roc = IOE_particles[p]/2000, velx=velx[p], vely=vely[p], velz=velz[p], density_shot=particledensity[p], filebase = '{}_{}'.format(filename,int(p)), restartbase = '{}_{}'.format(filename,int(p-1)))
 
-      
 
 
 #need to come up with a good to name files, do database, then restart from each previous simulation, and do bash file generation
