@@ -127,10 +127,10 @@ def sphere_box_montecarlo(sphere_center, radius, box_coords, n):
 
 def bash_gen(filename, n_files):
     "generate a bash script to run a series of simualtions with restarts"
-    f = open('{}.sh'.format(filename), 'w')
-    f.write('~/original-moose2/restart/restart-opt -i {}_{}.i\n'.format(filename, int(0)))
+    f = open('{}/{}.sh'.format(filename,filename), 'w')
+    f.write('mpiexec -np 2 ~/original-moose2/restart/restart-opt -i {}_{}.i\n'.format(filename, int(0)))
     for n in range (1,n_files):
-      f.write('~/original-moose2/restart/restart-opt -i {}_{}.i\n'.format(filename, int(n)))
+      f.write('mpiexec -np 2 ~/original-moose2/restart/restart-opt -i -i {}_{}.i\n'.format(filename, int(n)))
     f.close()
 # changes for init sim:
 # create second order aux var for output displacements
@@ -1555,7 +1555,6 @@ def write_to_database(filename, n, impact_x, impact_y, roc, velx, vely, velz, fi
     db = open("database.csv", "a")
     db.write("{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}\n".format(filename, n, impact_x, impact_y, roc, velx, vely, velz, filebase, mediafile, archetype, massflowrate_kg, peeningtime, partarea, velo_mean, velo_std))
     db.close()
-    return 0
 
 def main(n_trials, mediafile, archetype, massflowrate_kg, peeningtime, partarea, velo_mean, velo_std, density = 7.98E-9, thetamean = 0, thetastd = 0.001, phimean = 0, phistd = 0.001):
   for n in range(0,n_trials):
@@ -1569,12 +1568,12 @@ def main(n_trials, mediafile, archetype, massflowrate_kg, peeningtime, partarea,
       for p in range(0,len(IOE_particles)):
           particledensity[p] = 2*density_scale[p]*density*IOE_effectivedensity[p]
       #now we have the mass density for each particle
+      os.mkdir(filename)
       bash_gen(filename=filename, n_files=len(IOE_particles))
+      
       initialfile(filename='{}/{}_{}'.format(filename,filename,int(0)), impact_x = x_coords[0], impact_y = y_coords[0], roc = IOE_particles[0]/2000, velx=velx[0], vely=vely[0], velz=velz[0], shot_density=particledensity[0], filebase = '{}_{}'.format(filename,int(0)))
-      write_to_database(filename=filename, n=0, impact_x = x_coords[0], impact_y = y_coords[0], roc = IOE_particles[0]/2000, velx=velx[0], vely=vely[0], velz=velz[0], filebase = 'init', mediafile = mediafile, archetype = archetype, massflowrate_kg = massflowrate_kg, peeningtime = peeningtime, partarea = partarea, velo_mean = velo_mean, velo_std = velo_std)
       for p in range (1,len(IOE_particles)):
           restartfile(filename='{}/{}_{}'.format(filename,filename,int(p)), impact_x = x_coords[p], impact_y = y_coords[p], roc = IOE_particles[p]/2000, velx=velx[p], vely=vely[p], velz=velz[p], density_shot=particledensity[p], filebase = '{}_{}'.format(filename,int(p)), restartbase = '{}_{}'.format(filename,int(p-1)))
-          write_to_database(filename=filename, n=p, impact_x = x_coords[p], impact_y = y_coords[p], roc = IOE_particles[p]/2000, velx=velx[p], vely=vely[p], velz=velz[p], filebase = '{}_{}'.format(filename,int(p-1)), mediafile = mediafile, archetype = archetype, massflowrate_kg = massflowrate_kg, peeningtime = peeningtime, partarea = partarea, velo_mean = velo_mean, velo_std = velo_std)
 
 
 
