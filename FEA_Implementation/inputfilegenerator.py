@@ -128,9 +128,9 @@ def sphere_box_montecarlo(sphere_center, radius, box_coords, n):
 def bash_gen(filename, n_files):
     "generate a bash script to run a series of simualtions with restarts"
     f = open('{}/{}.sh'.format(filename,filename), 'w')
-    f.write('mpiexec -np 2 ~/original-moose2/restart/restart-opt -i {}_{}.i\n'.format(filename, int(0)))
+    f.write('mpiexec -np 12 ~/original-moose2/restart/restart-opt -i {}_{}.i\n'.format(filename, int(0)))
     for n in range (1,n_files):
-      f.write('mpiexec -np 2 ~/original-moose2/restart/restart-opt -i -i {}_{}.i\n'.format(filename, int(n)))
+      f.write('mpiexec -np 12 ~/original-moose2/restart/restart-opt -i -i {}_{}.i\n'.format(filename, int(n)))
     f.close()
 # changes for init sim:
 # create second order aux var for output displacements
@@ -1140,7 +1140,7 @@ def mesh(filename, impact_x, impact_y, roc):
 []\n'''.format(roc, impact_x, impact_y, 1.01+roc, impact_x-0.075, impact_y-0.075, impact_x+0.075,impact_y+0.075))
    f.close()
    
-def TMkernelBC(filename):
+def TMkernelBC(filename, impact_x, impact_y, roc):
    f = open('{}.i'.format(filename), 'a')
    f.write('''[Modules/TensorMechanics/Master]
     [./block1]
@@ -1178,8 +1178,68 @@ def TMkernelBC(filename):
         boundary = 14
         value = 0.0
     [../]
+    [rot_x_shot1]
+        type = DisplacementAboutAxis
+        boundary = 21
+        function = 0
+        angle_units = degrees
+        axis_origin = '{} {} {}'
+        axis_direction = '1. 0. 0'
+        component = 1
+        variable = 'disp_y'
+    []
+    [rot_x_shot2]
+        type = DisplacementAboutAxis
+        boundary = 21
+        function = 0
+        angle_units = degrees
+        axis_origin = '{} {} {}'
+        axis_direction = '1. 0. 0'
+        component = 2
+        variable = 'disp_z'
+    []
+    [rot_y_shot0]
+        type = DisplacementAboutAxis
+        boundary = 21
+        function = 0
+        angle_units = degrees
+        axis_origin = '{} {} {}'
+        axis_direction = '0. 1. 0'
+        component = 0
+        variable = 'disp_x'
+    []
+    [rot_y_shot2]
+        type = DisplacementAboutAxis
+        boundary = 21
+        function = 0
+        angle_units = degrees
+        axis_origin = '{} {} {}'
+        axis_direction = '0. 1. 0'
+        component = 2
+        variable = 'disp_z'
+    []
+    [rot_z_shot0]
+        type = DisplacementAboutAxis
+        boundary = 21
+        function = 0
+        angle_units = degrees
+        axis_origin = '{} {} {}'
+        axis_direction = '0. 0. 1'
+        component = 0
+        variable = 'disp_x'
+    []
+    [rot_z_shot1]
+        type = DisplacementAboutAxis
+        boundary = 21
+        function = 0
+        angle_units = degrees
+        axis_origin = '{} {} {}'
+        axis_direction = '0. 0. 1'
+        component = 1
+        variable = 'disp_y'
+    []
 
-[]\n''')
+[]\n'''.format(impact_x, impact_y, 1.01+roc, impact_x, impact_y, 1.01+roc, impact_x, impact_y, 1.01+roc, impact_x, impact_y, 1.01+roc, impact_x, impact_y, 1.01+roc, impact_x, impact_y, 1.01+roc))
 
    f.close()   
 def contact(filename):
@@ -1525,7 +1585,7 @@ def initialfile(filename, impact_x, impact_y, roc, velx, vely, velz, shot_densit
     userobjects_initial(filename)
     ics(filename, velx, vely, velz)
     mesh(filename, impact_x, impact_y, roc)
-    TMkernelBC(filename)
+    TMkernelBC(filename, impact_x, impact_y, roc)
     contact(filename)
     auxkernels(filename)
     materials(filename, shot_density)
@@ -1538,7 +1598,7 @@ def restartfile(filename, impact_x, impact_y, roc, velx, vely, velz, density_sho
     userobjects(filename, restartbase)
     ics(filename, velx, vely, velz)
     mesh(filename, impact_x, impact_y, roc)
-    TMkernelBC(filename)
+    TMkernelBC(filename, impact_x, impact_y, roc)
     contact(filename)
     auxkernels(filename)
     materials(filename, density_shot)
