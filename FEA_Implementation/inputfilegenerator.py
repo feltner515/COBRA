@@ -1178,66 +1178,66 @@ def TMkernelBC(filename, impact_x, impact_y, roc):
         boundary = 14
         value = 0.0
     [../]
-    [rot_x_shot1]
-        type = DisplacementAboutAxis
-        boundary = 21
-        function = 0
-        angle_units = degrees
-        axis_origin = '{} {} {}'
-        axis_direction = '1. 0. 0'
-        component = 1
-        variable = 'disp_y'
-    []
-    [rot_x_shot2]
-        type = DisplacementAboutAxis
-        boundary = 21
-        function = 0
-        angle_units = degrees
-        axis_origin = '{} {} {}'
-        axis_direction = '1. 0. 0'
-        component = 2
-        variable = 'disp_z'
-    []
-    [rot_y_shot0]
-        type = DisplacementAboutAxis
-        boundary = 21
-        function = 0
-        angle_units = degrees
-        axis_origin = '{} {} {}'
-        axis_direction = '0. 1. 0'
-        component = 0
-        variable = 'disp_x'
-    []
-    [rot_y_shot2]
-        type = DisplacementAboutAxis
-        boundary = 21
-        function = 0
-        angle_units = degrees
-        axis_origin = '{} {} {}'
-        axis_direction = '0. 1. 0'
-        component = 2
-        variable = 'disp_z'
-    []
-    [rot_z_shot0]
-        type = DisplacementAboutAxis
-        boundary = 21
-        function = 0
-        angle_units = degrees
-        axis_origin = '{} {} {}'
-        axis_direction = '0. 0. 1'
-        component = 0
-        variable = 'disp_x'
-    []
-    [rot_z_shot1]
-        type = DisplacementAboutAxis
-        boundary = 21
-        function = 0
-        angle_units = degrees
-        axis_origin = '{} {} {}'
-        axis_direction = '0. 0. 1'
-        component = 1
-        variable = 'disp_y'
-    []
+    # [rot_x_shot1]
+    #     type = DisplacementAboutAxis
+    #     boundary = 21
+    #     function = 0
+    #     angle_units = degrees
+    #     axis_origin = '{} {} {}'
+    #     axis_direction = '1. 0. 0'
+    #     component = 1
+    #     variable = 'disp_y'
+    # []
+    # [rot_x_shot2]
+    #     type = DisplacementAboutAxis
+    #     boundary = 21
+    #     function = 0
+    #     angle_units = degrees
+    #     axis_origin = '{} {} {}'
+    #     axis_direction = '1. 0. 0'
+    #     component = 2
+    #     variable = 'disp_z'
+    # []
+    # [rot_y_shot0]
+    #     type = DisplacementAboutAxis
+    #     boundary = 21
+    #     function = 0
+    #     angle_units = degrees
+    #     axis_origin = '{} {} {}'
+    #     axis_direction = '0. 1. 0'
+    #     component = 0
+    #     variable = 'disp_x'
+    # []
+    # [rot_y_shot2]
+    #     type = DisplacementAboutAxis
+    #     boundary = 21
+    #     function = 0
+    #     angle_units = degrees
+    #     axis_origin = '{} {} {}'
+    #     axis_direction = '0. 1. 0'
+    #     component = 2
+    #     variable = 'disp_z'
+    # []
+    # [rot_z_shot0]
+    #     type = DisplacementAboutAxis
+    #     boundary = 21
+    #     function = 0
+    #     angle_units = degrees
+    #     axis_origin = '{} {} {}'
+    #     axis_direction = '0. 0. 1'
+    #     component = 0
+    #     variable = 'disp_x'
+    # []
+    # [rot_z_shot1]
+    #     type = DisplacementAboutAxis
+    #     boundary = 21
+    #     function = 0
+    #     angle_units = degrees
+    #     axis_origin = '{} {} {}'
+    #     axis_direction = '0. 0. 1'
+    #     component = 1
+    #     variable = 'disp_y'
+    # []
 
 []\n'''.format(impact_x, impact_y, 1.01+roc, impact_x, impact_y, 1.01+roc, impact_x, impact_y, 1.01+roc, impact_x, impact_y, 1.01+roc, impact_x, impact_y, 1.01+roc, impact_x, impact_y, 1.01+roc))
 
@@ -1246,7 +1246,7 @@ def contact(filename):
    f = open('{}.i'.format(filename), 'a')
    f.write('''[Contact]
   [./dummy_name]
-    primary = 22
+    primary = 20 # 22
     secondary = 15
     model = coulomb
     formulation = penalty
@@ -1261,7 +1261,7 @@ def contact(filename):
   [./contact_slip]
     type = ContactSlipDamper
     secondary = 15
-    primary = 22
+    primary = 20 # 22
   [../]
   [jacobian_damper]
     type = ReferenceElementJacobianDamper
