@@ -1042,12 +1042,12 @@ def mesh(filename, impact_x, impact_y, roc):
     [subs_0]
       type = GeneratedMeshGenerator
       dim = 2 
-      nx = 15
-      ny = 15
-      xmin = 0.25
-      xmax = 0.75
-      ymin = 0.25
-      ymax = 0.75
+      nx = 17
+      ny = 17
+      xmin = 0.24
+      xmax = 0.76
+      ymin = 0.24
+      ymax = 0.76
       elem_type = QUAD9
     []
     [subs]
@@ -1109,8 +1109,8 @@ def mesh(filename, impact_x, impact_y, roc):
     [shot_sides2]
       type = SideSetsFromBoundingBoxGenerator
       input = translate_shot
-      bottom_left = '0.25 0.25 1'
-      top_right = '0.75 0.75 1.1'
+      bottom_left = '0.23 0.23 1'
+      top_right = '0.77 0.77 1.1'
       boundary_new = 22
       boundaries_old = '20'
       block_id = 2
@@ -1246,7 +1246,7 @@ def contact(filename):
    f = open('{}.i'.format(filename), 'a')
    f.write('''[Contact]
   [./dummy_name]
-    primary = 20 # 22
+    primary = 22 # 22
     secondary = 15
     model = coulomb
     formulation = penalty
@@ -1623,7 +1623,7 @@ def main(n_trials, mediafile, archetype, massflowrate_kg, peeningtime, partarea,
       velx, vely, velz  = velo_dist(velomean=velo_mean, velostd=velo_std, thetamean = thetamean, thetastd= thetastd, phimean=phimean, phistd=phistd, IOE_particles=IOE_particles)
       density_scale = np.zeros((len(IOE_particles),1))
       for p in range(0,len(IOE_particles)):
-          density_scale[p] = sphere_box_montecarlo(radius = IOE_particles[p]/2000, sphere_center=[x_coords[0], y_coords[p], 2], box_coords=[0.25,0.25,0, 0.75,0.75,10], n=1E6)
+          density_scale[p] = sphere_box_montecarlo(radius = IOE_particles[p]/2000, sphere_center=[x_coords[0], y_coords[p], 2], box_coords=[0.24,0.24,0, 0.76,0.76,10], n=1E6)
       particledensity = np.zeros((len(IOE_particles),1))
       for p in range(0,len(IOE_particles)):
           particledensity[p] = 2*density_scale[p]*density*IOE_effectivedensity[p]
