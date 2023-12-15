@@ -1261,7 +1261,7 @@ def contact(filename):
   [./contact_slip]
     type = ContactSlipDamper
     secondary = 15
-    primary = 20 # 22
+    primary = 22 # 22
   [../]
   [jacobian_damper]
     type = ReferenceElementJacobianDamper
