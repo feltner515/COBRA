@@ -1110,7 +1110,7 @@ def mesh(filename, impact_x, impact_y, roc):
       type = SideSetsFromBoundingBoxGenerator
       input = translate_shot
       bottom_left = '0.23 0.23 1'
-      top_right = '0.77 0.77 1.1'
+      top_right = '0.77 0.77 1.3'
       boundary_new = 22
       boundaries_old = '20'
       block_id = 2
@@ -1137,7 +1137,7 @@ def mesh(filename, impact_x, impact_y, roc):
       outside = do_nothing
     [../]
   [../]
-[]\n'''.format(roc, impact_x, impact_y, 1.01+roc, impact_x-0.075, impact_y-0.075, impact_x+0.075,impact_y+0.075))
+[]\n'''.format(roc, impact_x, impact_y, 1.05+roc, impact_x-0.075, impact_y-0.075, impact_x+0.075,impact_y+0.075))
    f.close()
    
 def TMkernelBC(filename, impact_x, impact_y, roc):
@@ -1536,7 +1536,7 @@ def executioner(filename, filebase):
   petsc_options_value = 'lu       basic                 NONZERO               1e-15'
   line_search = 'none'
   automatic_scaling = true
-  nl_abs_tol = 6e-07
+  nl_abs_tol = 1e-06
   nl_rel_tol = 1e-50
   l_max_its = 25
   nl_max_its = 200
