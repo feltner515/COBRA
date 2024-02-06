@@ -128,9 +128,9 @@ def sphere_box_montecarlo(sphere_center, radius, box_coords, n):
 def bash_gen(filename, n_files):
     "generate a bash script to run a series of simualtions with restarts"
     f = open('{}/{}.sh'.format(filename,filename), 'w')
-    f.write('mpiexec -np 12 ~/original-moose2/restart/restart-opt -i {}_{}.i\n'.format(filename, int(0)))
+    f.write('mpiexec -np 10 ~/original-moose2/restart/restart-opt -i {}_{}.i\n'.format(filename, int(0)))
     for n in range (1,n_files):
-      f.write('mpiexec -np 12 ~/original-moose2/restart/restart-opt -i -i {}_{}.i\n'.format(filename, int(n)))
+      f.write('mpiexec -np 10 ~/original-moose2/restart/restart-opt -i -i {}_{}.i\n'.format(filename, int(n)))
     f.close()
 # changes for init sim:
 # create second order aux var for output displacements
@@ -313,8 +313,10 @@ def userobjects_initial(filename):
 
 [Functions]
   [subs_solution_fcn_hardening_variable]
-  type = SolutionFunction
-  solution = soln_zeros # soln 
+  #type = SolutionFunction
+  #solution = soln_zeros # soln 
+  type = ConstantFunction
+  value = 1408
   []
   [subs_solution_fcn_stress_00]
   type = SolutionFunction
@@ -1122,21 +1124,21 @@ def mesh(filename, impact_x, impact_y, roc):
     []
     allow_renumbering=true
     patch_update_strategy = iteration
-    ghosting_patch_size = 100
+    ghosting_patch_size = 1000
 []
 [Adaptivity]
-  initial_marker = box
+  initial_marker = boundary
   initial_steps = 1
-  switch_h_to_p_refinement = true
-  [./Markers]
-    [./box]
-      type = BoxMarker
-      bottom_left = '{} {} 0.8'
-      top_right = '{} {} 1'
-      inside = refine
-      outside = do_nothing
-    [../]
-  [../]
+  # switch_h_to_p_refinement = false
+  [Markers]
+    [boundary]
+        type = BoundaryMarker
+        next_to = 20
+        # distance = 0.01
+        mark = refine
+        block = '2'
+    []
+  []
 []\n'''.format(roc, impact_x, impact_y, 1.05+roc, impact_x-0.075, impact_y-0.075, impact_x+0.075,impact_y+0.075))
    f.close()
    
@@ -1246,7 +1248,7 @@ def contact(filename):
    f = open('{}.i'.format(filename), 'a')
    f.write('''[Contact]
   [./dummy_name]
-    primary = 22 # 22
+    primary = 20 # 22
     secondary = 15
     model = coulomb
     formulation = penalty
@@ -1261,7 +1263,7 @@ def contact(filename):
   [./contact_slip]
     type = ContactSlipDamper
     secondary = 15
-    primary = 22 # 22
+    primary = 20 # 22
   [../]
   [jacobian_damper]
     type = ReferenceElementJacobianDamper
@@ -1469,8 +1471,8 @@ def materials(filename, density_shot):
   [./power_law_hardening]
     type = ADIsotropicPowerLawHardeningStressUpdate
     # automatic_differentiation_return_mapping = true
-    strength_coefficient = 640 #K
-    strain_hardening_exponent = 0.15 #n
+    strength_coefficient = 600 #K
+    strain_hardening_exponent = 0.234 #n
     block = '1'
     base_name = 'subs'
     # base_name = 'block1_sim0'
@@ -1529,6 +1531,9 @@ def executioner(filename, filebase):
 
 [Executioner]
   type = Transient
+  [TimeIntegrator]
+    type = CrankNicolson
+  []
   solve_type = 'NEWTON'
   petsc_options = '-snes_ksp_ew'
 
@@ -1567,14 +1572,14 @@ def executioner(filename, filebase):
         # block = '1'
         
     [../]
-    [out3]
-      type = Exodus
-      file_base = '{}'
-      execute_on = FINAL
-      refinements = 2
-      elemental_as_nodal = true
-      execute_elemental_on = none
-    []
+    #[out3]
+     # type = Exodus
+     # file_base = '{}'
+     # execute_on = FINAL
+     # refinements = 2
+     # elemental_as_nodal = true
+     # execute_elemental_on = none
+   # []
 []'''.format(filebase))
    f.close()
 
