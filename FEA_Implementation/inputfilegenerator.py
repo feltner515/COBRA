@@ -1471,8 +1471,8 @@ def materials(filename, density_shot):
   [./power_law_hardening]
     type = ADIsotropicPowerLawHardeningStressUpdate
     # automatic_differentiation_return_mapping = true
-    strength_coefficient = 600 #K
-    strain_hardening_exponent = 0.234 #n
+    strength_coefficient = 3590 #K
+    strain_hardening_exponent = 0.660 #n
     block = '1'
     base_name = 'subs'
     # base_name = 'block1_sim0'
@@ -1621,25 +1621,44 @@ def write_to_database(filename, n, impact_x, impact_y, roc, velx, vely, velz, fi
     db.write("{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}\n".format(filename, n, impact_x, impact_y, roc, velx, vely, velz, filebase, mediafile, archetype, massflowrate_kg, peeningtime, partarea, velo_mean, velo_std))
     db.close()
 
-def main(n_trials, mediafile, archetype, massflowrate_kg, peeningtime, partarea, velo_mean, velo_std, density = 7.98E-9, thetamean = 0, thetastd = 0.001, phimean = 0, phistd = 0.001):
+def main(n_trials, mediafile, archetype, massflowrate_kg, peeningtime, partarea, velo_mean, velo_std, density = 7.98E-9, thetamean = 0, thetastd = 0.001, phimean = 0, phistd = 0.001, branches_num, branches_depth, filename = get_random_string(10)):
+      
   for n in range(0,n_trials):
-      filename = get_random_string(10)
       IOE_particles, IOE_effectivedensity,  x_coords, y_coords = media_sampling(mediafile, archetype, massflowrate_kg, peeningtime, partarea)
       velx, vely, velz  = velo_dist(velomean=velo_mean, velostd=velo_std, thetamean = thetamean, thetastd= thetastd, phimean=phimean, phistd=phistd, IOE_particles=IOE_particles)
       density_scale = np.zeros((len(IOE_particles),1))
       for p in range(0,len(IOE_particles)):
-          density_scale[p] = sphere_box_montecarlo(radius = IOE_particles[p]/2000, sphere_center=[x_coords[0], y_coords[p], 2], box_coords=[0.24,0.24,0, 0.76,0.76,10], n=1E6)
+          density_scale[p] = sphere_box_montecarlo(radius = IOE_particles[p]/2000, sphere_center=[x_coords[p], y_coords[p], 2], box_coords=[0.24,0.24,0, 0.76,0.76,10], n=1E6)
       particledensity = np.zeros((len(IOE_particles),1))
       for p in range(0,len(IOE_particles)):
           particledensity[p] = 2*density_scale[p]*density*IOE_effectivedensity[p]
       #now we have the mass density for each particle
       os.mkdir(filename)
+      #also need to update the bash generator
       bash_gen(filename=filename, n_files=len(IOE_particles))
-      
       initialfile(filename='{}/{}_{}'.format(filename,filename,int(0)), impact_x = x_coords[0], impact_y = y_coords[0], roc = IOE_particles[0]/2000, velx=velx[0], vely=vely[0], velz=velz[0], shot_density=particledensity[0], filebase = '{}_{}'.format(filename,int(0)))
       for p in range (1,len(IOE_particles)):
           restartfile(filename='{}/{}_{}'.format(filename,filename,int(p)), impact_x = x_coords[p], impact_y = y_coords[p], roc = IOE_particles[p]/2000, velx=velx[p], vely=vely[p], velz=velz[p], density_shot=particledensity[p], filebase = '{}_{}'.format(filename,int(p)), restartbase = '{}_{}'.format(filename,int(p-1)))
-
-
-
+      if branches_num > 0:
+          
+        branch_idx = random.sample(range(0,len(IOE_particles)), branches_num)
+        for p in range (0,branches_num):
+            ##Edit bash gen file, link in with the restart file, maybe add in n_impacts to the media sampling loop, also go ahead and make zeros file adjustment to main loop
+            branch_particles, branch_effectivedensity,  branch_x_coords, branch_y_coords = media_sampling(mediafile, archetype, massflowrate_kg, peeningtime, partarea)
+            branch_velx, branch_vely, branch_velz  = velo_dist(velomean=velo_mean, velostd=velo_std, thetamean = thetamean, thetastd= thetastd, phimean=phimean, phistd=phistd, IOE_particles=branch_particles)
+            branch_density_scale = np.zeros((len(branch_particles),1))
+            for t in range(0,len(IOE_particles)):
+                branch_density_scale[t] = sphere_box_montecarlo(radius = branch_particles[t]/2000, sphere_center=[branch_x_coords[t], branch_y_coords[t], 2], box_coords=[0.24,0.24,0, 0.76,0.76,10], n=1E6)
+            branch_particledensity = np.zeros((len(branch_particles),1))
+            for t in range(0,len(branch_particles)):
+                branch_particledensity[p] = 2*branch_density_scale[p]*density*branch_effectivedensity[p]
+            for b in range (0,branches_depth):
+                ##add another line for the first file
+                if (b = 0):
+                  restartfile(filename='{}/{}_{}_{}'.format(filename,filename,int(branch_idx[p]), int(b)), impact_x = branch_x_coords[b], impact_y = branch_y_coords[b], roc = branch_particles[b]/2000, velx=branch_velx[b], vely=branch_vely[b], velz=branch_velz[b], density_shot=branch_particledensity[b], filebase = '{}_{}_{}'.format(filename,int(branch_idx[p]) ,int(b)), restartbase = '{}_{}'.format(filename,int(p)))
+                else:
+                  restartfile(filename='{}/{}_{}_{}'.format(filename,filename,int(branch_idx[p]), int(b)), impact_x = branch_x_coords[b], impact_y = branch_y_coords[b], roc = branch_particles[b]/2000, velx=branch_velx[b], vely=branch_vely[b], velz=branch_velz[b], density_shot=branch_particledensity[b], filebase = '{}_{}_{}'.format(filename,int(branch_idx[p]) ,int(b)), restartbase = '{}_{}_{}'.format(filename,int(p), int(b-1)))
+              
+    
+##Not finished!!!
 #need to come up with a good to name files, do database, then restart from each previous simulation, and do bash file generation
